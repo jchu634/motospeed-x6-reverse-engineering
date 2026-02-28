@@ -1,0 +1,11 @@
+[project]
+name = "motospeed-x6-testing"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "hidapi>=0.15.0",
+    "libusb-package>=1.0.26.3",
+    "pyusb>=1.3.1",
+]
