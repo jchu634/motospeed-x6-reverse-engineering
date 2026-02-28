@@ -11,7 +11,7 @@ SET_REPORT_REQUEST = 0x09
 REPORT_TYPE_OUTPUT = 0x02
 REPORT_ID = 0xB5
 INTERFACE_NUMBER = 4
-REPORT_DATA = bytes([0xB5, 0x03] + [0x00] * 19)  # 21 bytes total
+REPORT_DATA = bytes([REPORT_ID, 0x06] + [0x00] * 19)  # 21 bytes total
 
 # Interrupt IN endpoint for the battery response (EP5 IN)
 BATTERY_ENDPOINT = 0x85
@@ -40,6 +40,7 @@ def find_device(vid: int, pid: int, log) -> usb.core.Device | None:
 
 def send_set_report(dev: usb.core.Device, log) -> bool:
     """Send the SET_REPORT control transfer to EP0 to trigger battery data."""
+
     wValue = (REPORT_TYPE_OUTPUT << 8) | REPORT_ID  # 0x02B5
 
     log.debug(
