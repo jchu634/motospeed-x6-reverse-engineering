@@ -1,0 +1,13 @@
+[Port 2] USB Composite Device
+    USB Input Device
+        HID-compliant mouse
+    USB Input Device
+        HID Keyboard Device
+        HID-compliant consumer control device
+    USB Input Device
+        HID-compliant vendor-defined device
+        HID-compliant vendor-defined device
+    USB Input Device
+        HID-compliant bar code badge reader
+    USB Input Device
+        HID-compliant vendor-defined device
