@@ -1,7 +1,7 @@
 [project]
-name = "motospeed-x6-testing"
+name = "motospeed-x6-reverse-engineering"
 version = "0.1.0"
-description = "Add your description here"
+description = "Collection of discoveries on the motospeed x6"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
