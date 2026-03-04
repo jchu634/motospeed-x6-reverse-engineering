@@ -42,7 +42,7 @@ wheels = [
 ]
 
 [[package]]
-name = "motospeed-x6-testing"
+name = "motospeed-x6-reverse-engineering"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [

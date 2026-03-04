@@ -118,10 +118,13 @@ def main():
     # Fill in your VID/PID here
     VID = 0x0BDA
     PID = 0xFFE0
+    alt_PID = 0xFFF1
 
     dev = find_device(VID, PID, log)
     if dev is None:
-        return
+        dev = find_device(VID, alt_PID, log)
+        if dev is None:
+            return
 
     try:
         usb.util.claim_interface(dev, INTERFACE_NUMBER)
