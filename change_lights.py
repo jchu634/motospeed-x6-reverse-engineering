@@ -41,6 +41,22 @@ def create_static_report_data(r: int, g: int, b: int, brightness: int) -> bytes:
     )  # 21 bytes total
 
 
+def create_breathing_report_data(
+    r: int, g: int, b: int, brightness: int, speed: int
+) -> bytes:
+    """Create REPORT_DATA with RGB values inserted."""
+    return bytes(
+        [REPORT_ID, 0x24, 0x02, brightness, speed, r, g, b] + [0x00] * 14
+    )  # 21 bytes total
+
+
+def create_rainbow_report_data(brightness: int, speed: int) -> bytes:
+    """Create REPORT_DATA for rainbow mode"""
+    return bytes(
+        [REPORT_ID, 0x24, 0x03, brightness, speed, 0xFF] + [0x00] * 16
+    )  # 21 bytes total
+
+
 def find_device(vid: int, pid: int, log) -> usb.core.Device | None:
     dev = usb.core.find(idVendor=vid, idProduct=pid)
     if dev is None:
@@ -88,31 +104,59 @@ def main():
 
     parser = argparse.ArgumentParser(description="Change mouse LED color")
     parser.add_argument(
-        "-b", "--brightness", type=int, default=255, help="Light Brightness (0-255)"
+        "-b",
+        "--brightness",
+        type=int,
+        default=255,
+        help="Light Brightness (0-255)(Default=255)",
+    )
+    parser.add_argument(
+        "-s",
+        "--speed",
+        type=int,
+        default=255,
+        help="Light Breathing speed (0-255)(Default=255)",
     )
     parser.add_argument("-c", "--clear", help="Disables lights", action="store_true")
     parser.add_argument(
-        "-s", "--static_hex_color", type=str, help="Hex color (e.g., FF0000 for red)"
+        "-h", "--hex_colour", type=str, help="Hex color (e.g., FF0000 for red)"
     )
+    parser.add_argument("-s", "--static", action="store_true", help="Static Lights")
+    parser.add_argument(
+        "-br", "--breathing", action="store_true", help="Breathing Lights"
+    )
+    parser.add_argument("-r", "--rainbow", action="store_true", help="Breathing Lights")
 
     args = parser.parse_args()
 
     if args.brightness > 255 or args.brightness < 0:
         print("Invalid Brightness Value")
         return
+    elif args.speed > 255 or args.speed < 0:
+        print("Invalid Speed Value")
+        return
     elif args.clear:
         report_data = bytes([REPORT_ID, 0x24] + [0x00] * 19)
 
-    elif args.static_hex_color:
+    elif args.hex_colour:
         try:
-            r, g, b = parse_hex_color(args.static_hex_color)
+            r, g, b = parse_hex_color(args.hex_colour)
             print(f"Parsed color: R={r} G={g} B={b}")
             print(f"Parsed color Hex: R={r:#04x} G={g:#04x} B={b:#04x}")
         except ValueError as e:
             print(f"Error parsing hex color: {e}")
             return
-
-        report_data = create_static_report_data(r, g, b, args.brightness)
+        if args.static:
+            report_data = create_static_report_data(r, g, b, args.brightness)
+        elif args.breathing:
+            report_data = create_breathing_report_data(
+                r, g, b, args.brightness, args.speed
+            )
+        elif args.rainbow:
+            report_data = create_rainbow_report_data(args.brightness, args.speed)
+        else:
+            print("No mode chosen")
+            return
 
     print(f"Report data: {report_data.hex()}")
 
