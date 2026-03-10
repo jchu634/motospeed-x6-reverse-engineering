@@ -1,4 +1,5 @@
 import std.io;
+import std.mem;
  
 enum SubPacketHeaders : u8 {
     hid_key_down = 0x81,
@@ -36,14 +37,23 @@ enum MouseScroll : u16 {
 bitfield header {
     hid_report_id :8;
     command_type :8;
-    u8 slot;
-    padding:8;             // Unknown
-    u16 payload_length;    // Little Endian
-    u16 no_loops;
-    loopTypes loop_type;
-    u16 time_delay;
-    u16 instruct_count;    // Number of instructions
-    padding: 24; 
+    u8 idk;
+    match (idk){
+        (0x03):{
+            padding:8;             // Unknown
+            u16 payload_length;    // Little Endian
+            u16 no_loops;
+            loopTypes loop_type;
+            u16 time_delay;
+            u16 instruct_count;    // Number of instructions
+            padding: 24; 
+        }
+        (_):{
+            padding:8;
+        }
+       
+    }
+    
     
  };
  
